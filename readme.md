@@ -1,8 +1,17 @@
-Show list :
-![Screenshot](screenshots/Show list.png)
-Get element by ID
+# Список скришотов по домашке
+
+### Список
+
+![Screenshot](screenshots/list.png)
+
+### Вызов элемента по ИД
+
 ![Screenshot](screenshots/GetByID.png)
-Add item
+
+### Добавление контакта
+
 ![Screenshot](screenshots/addContact.png)
-Delete item
+
+### Удаление контакта
+
 ![Screenshot](screenshots/deleteItem.png)
