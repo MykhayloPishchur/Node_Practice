@@ -4,7 +4,9 @@
   "description": "just for learning",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": " node index.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/MykhayloPishchur/Node_Practice/issues"
   },
-  "homepage": "https://github.com/MykhayloPishchur/Node_Practice#readme"
+  "homepage": "https://github.com/MykhayloPishchur/Node_Practice#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "shortid": "^2.2.15",
+    "yargs": "^16.0.3"
+  }
 }
