@@ -1,22 +1,17 @@
 const path = require("path");
 const fs = require("fs");
 const shortid = require("shortid");
-const contactsPath = path.join(__dirname, "./db/contacts.json");
+const contactsPath = path.join(__dirname, "../../db/contacts.json");
 
 exports.listContacts = () =>
   fs.readFile(contactsPath, "utf8", (err, data) => {
     if (err) throw err;
-    console.table(JSON.parse(data));
   });
 
 exports.getContactById = (contactId) => {
   fs.readFile(contactsPath, "utf8", (err, data) => {
     if (err) throw err;
-    const contactFromId = JSON.parse(data).find(
-      (item) => item.id === contactId
-    );
-
-    console.table(contactFromId);
+    JSON.parse(data).find((item) => item.id === contactId);
   });
 };
 
@@ -25,19 +20,10 @@ exports.removeContact = (contactId) => {
     const contacts = JSON.parse(data);
 
     if (err) throw err;
-
-    const contactFromId = contacts.find((item) => item.id === contactId);
-
-    console.log("You are deleting this item below : ");
-    console.table(contactFromId);
-
     const editedList = contacts.filter((item) => item.id !== contactId);
 
     fs.writeFile(contactsPath, JSON.stringify(editedList), (err) => {
       if (err) throw err;
-      console.log("New list will be : ");
-
-      console.table(editedList);
     });
   });
 };
@@ -54,8 +40,20 @@ exports.addContact = (name, email, phone) => {
 
     fs.writeFile(contactsPath, editedList, (err) => {
       if (err) throw err;
-      console.log("You have added new contact below :");
-      console.table(newContact);
     });
+  });
+};
+
+exports.updateContact = (contactId, data) => {
+  const contacts = require(contactsPath);
+  const contactToFind = listContacts().find((item) => item.id === contactId);
+
+  contacts[contactToFind] = {
+    ...contacts[contactToFind],
+    ...data,
+  };
+
+  fs.writeFile(contactsPath, JSON.stringify(contacts), (err) => {
+    if (err) throw err;
   });
 };
