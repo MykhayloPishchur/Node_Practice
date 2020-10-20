@@ -1,5 +1,5 @@
 const express = require("express");
-const userRouter = express.Router();
+const router = express.Router();
 const {
   listContacts,
   findContact,
@@ -8,10 +8,10 @@ const {
   patchContact,
 } = require("./contact.controller");
 
-userRouter.get("/contacts", listContacts);
-userRouter.get("/contacts/:contactId", findContact);
-userRouter.post("/contacts", addContacts);
-userRouter.delete("/contacts/:contactId", deleteContacts);
-userRouter.patch("/contacts/:contactId", patchContact);
+router.get("/contacts", listContacts);
+router.get("/contacts/:contactId", findContact);
+router.post("/contacts", addContacts);
+router.delete("/contacts/:contactId", deleteContacts);
+router.patch("/contacts/:contactId", patchContact);
 
-module.exports = userRouter;
+module.exports = router;

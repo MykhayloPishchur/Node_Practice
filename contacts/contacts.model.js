@@ -1,59 +1,68 @@
 const path = require("path");
 const fs = require("fs");
 const shortid = require("shortid");
-const contactsPath = path.join(__dirname, "../../db/contacts.json");
+const contactsPath = path.join(__dirname, "../db/contacts.json");
 
-exports.listContacts = () =>
-  fs.readFile(contactsPath, "utf8", (err, data) => {
-    if (err) throw err;
-  });
+const dataArray = require(contactsPath);
 
-exports.getContactById = (contactId) => {
-  fs.readFile(contactsPath, "utf8", (err, data) => {
-    if (err) throw err;
-    JSON.parse(data).find((item) => item.id === contactId);
-  });
+const listContacts = () => {
+  return dataArray;
 };
 
-exports.removeContact = (contactId) => {
-  fs.readFile(contactsPath, "utf8", (err, data) => {
-    const contacts = JSON.parse(data);
+const getContactById = (contactId) => {
+  const id = String(contactId);
+  return dataArray.find((item) => String(item.id) === id);
+};
 
+const addContact = (name, email, phone) => {
+  const id = shortid.generate();
+  const newContact = { id, name, email, phone };
+  const editedList = [...dataArray, newContact];
+
+  fs.writeFile(contactsPath, JSON.stringify(editedList), (err, data) => {
     if (err) throw err;
-    const editedList = contacts.filter((item) => item.id !== contactId);
+  });
+
+  return editedList;
+};
+
+const removeContact = (contactId) => {
+  const id = String(contactId);
+
+  if (getContactById(id)) {
+    const editedList = dataArray.filter((item) => String(item.id) !== id);
 
     fs.writeFile(contactsPath, JSON.stringify(editedList), (err) => {
       if (err) throw err;
     });
-  });
+
+    return true;
+  } else return false;
 };
 
-exports.addContact = (name, email, phone) => {
-  const id = shortid.generate();
-  const newContact = { id, name, email, phone };
+const updateContact = (contactId, reqBody) => {
+  const id = String(contactId);
 
-  fs.readFile(contactsPath, "utf8", (err, data) => {
-    if (err) throw err;
-    const editedList = JSON.stringify(
-      data ? [...JSON.parse(data), newContact] : [newContact]
-    );
+  const targetContact = dataArray.findIndex((item) => String(item.id) === id);
 
-    fs.writeFile(contactsPath, editedList, (err) => {
-      if (err) throw err;
-    });
-  });
-};
-
-exports.updateContact = (contactId, data) => {
-  const contacts = require(contactsPath);
-  const contactToFind = listContacts().find((item) => item.id === contactId);
-
-  contacts[contactToFind] = {
-    ...contacts[contactToFind],
-    ...data,
+  if (targetContact === -1) {
+    return false;
+  }
+  dataArray[targetContact] = {
+    ...dataArray[targetContact],
+    ...reqBody,
   };
 
-  fs.writeFile(contactsPath, JSON.stringify(contacts), (err) => {
+  fs.writeFile(contactsPath, JSON.stringify(dataArray), function (err) {
     if (err) throw err;
   });
+  return dataArray[targetContact];
+};
+
+module.exports = {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+  updateContact,
 };

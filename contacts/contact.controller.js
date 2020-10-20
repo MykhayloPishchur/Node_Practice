@@ -1,5 +1,5 @@
 const contactsFunctions = require("./contacts.model");
-const { contactsValadation } = require("./contact.validation");
+const { validation } = require("./contact.validation");
 
 exports.listContacts = (req, res) => {
   const contacts = contactsFunctions.listContacts();
@@ -17,18 +17,15 @@ exports.findContact = (req, res) => {
 };
 
 exports.addContacts = (req, res) => {
-  const { error } = contactsValadation.validate(req.body);
+  const { name, email, phone } = req.body;
+  const { error } = validation.validate(req.body);
   if (error) {
-    res.status(400).json({ message: error.message });
-    return;
+    return res.status(400).json({ message: error.message });
   }
-  const contacts = contactsFunctions.addContact(
-    req.body.name,
-    req.body.email,
-    req.body.phone
-  );
 
-  return res.status(201).json(contacts);
+  const newContact = contactsFunctions.addContact(name, email, phone);
+
+  return res.status(201).json(newContact);
 };
 
 exports.deleteContacts = (req, res) => {

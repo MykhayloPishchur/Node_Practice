@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const userRouter = require("./contacts/contacts.routes");
+const router = require("./contacts/contacts.routes");
 
 const PORT = process.env.PORT || 8080;
 
@@ -24,8 +24,7 @@ class Server {
   }
 
   initRouters() {
-    this.server.use("/contacts", userRouter);
-    // this.server.use('/posts', postsRouter);
+    this.server.use("/api", router);
   }
 
   listen() {
