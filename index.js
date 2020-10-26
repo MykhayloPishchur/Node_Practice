@@ -2,8 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const router = require("./contacts/contacts.routes");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
-const PORT = process.env.PORT || 8080;
+dotenv.config();
+
+const PORT = process.env.PORT;
+const MONGO_DB_URL = `mongodb+srv://admin:${process.env.DB_PASSWORD}@cluster0.69hqj.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 class Server {
   constructor() {
@@ -11,10 +16,24 @@ class Server {
   }
 
   start() {
-    this.server = express();
+    this.connectDB();
     this.initMiddleware();
     this.initRouters();
     this.listen();
+  }
+
+  async connectDB() {
+    try {
+      this.server = express();
+      await mongoose.connect(MONGO_DB_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      console.log("Database connection successful");
+    } catch (err) {
+      console.log(err.message);
+      process.exit(1);
+    }
   }
 
   initMiddleware() {
@@ -24,7 +43,7 @@ class Server {
   }
 
   initRouters() {
-    this.server.use("/api", router);
+    this.server.use("/", router);
   }
 
   listen() {
