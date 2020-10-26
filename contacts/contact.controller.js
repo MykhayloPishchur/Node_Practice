@@ -36,7 +36,7 @@ async function addContacts(req, res, next) {
     const contact = await contactModel.create(req.body);
     return res.status(201).json(contact);
   } catch (err) {
-    console.log(err.message);
+    res.status(500).send(err);
   }
 }
 
@@ -52,7 +52,7 @@ async function deleteContacts(req, res, next) {
     }
     res.status(404).json({ message: "Not found" });
   } catch (err) {
-    console.log(err.message);
+    next(err);
   }
 }
 
@@ -60,9 +60,15 @@ async function patchContact(req, res, next) {
   const { contactId } = req.params;
 
   try {
-    const contact = await contactModel.findByIdAndUpdate(contactId, {
-      $set: req.body,
-    });
+    const contact = await contactModel.findByIdAndUpdate(
+      contactId,
+      {
+        $set: req.body,
+      },
+      {
+        new: true,
+      }
+    );
 
     if (!contact) {
       res.status(404).send({ message: "Not found" });
@@ -70,7 +76,7 @@ async function patchContact(req, res, next) {
 
     res.status(200).json(contact);
   } catch (err) {
-    console.log(err.message);
+    next(err);
   }
 }
 
