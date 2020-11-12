@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const mongoosePaginate = require("mongoose-paginate-v2");
 
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
@@ -15,7 +14,6 @@ const userSchema = new Schema({
   token: { type: String },
 });
 
-userSchema.plugin(mongoosePaginate);
 userSchema.statics.findUserByIdAndUpdate = findUserByIdAndUpdate;
 userSchema.statics.findUserByEmail = findUserByEmail;
 userSchema.statics.findUserByToken = findUserByToken;
