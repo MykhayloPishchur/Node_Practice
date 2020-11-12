@@ -44,8 +44,8 @@ class Server {
   }
 
   initRouters() {
-    this.server.use("/api", userAuthRooter);
-    this.server.use("/auth", contactRouter);
+    this.server.use("/api", contactRouter);
+    this.server.use("/auth",userAuthRooter );
   }
 
   listen() {

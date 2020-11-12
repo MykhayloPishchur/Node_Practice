@@ -1,3 +1,8 @@
+const userModel = require("./user.model");
+const { userValidation } = require("./user.validation");
+const bcrypjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
 class userController {
   constructor() {
     this._costFactor = 5;
@@ -11,7 +16,7 @@ class userController {
     try {
       const { email, password, subscription } = req.body;
 
-      const { error } = usersValadation.validate(req.body);
+      const { error } = userValidation.validate(req.body);
       if (error) {
         res.status(400).json({ message: error.message });
         return;
@@ -43,7 +48,7 @@ class userController {
   async logIn(req, res, next) {
     try {
       const { email, password } = req.body;
-      const { error } = usersValadation.validate(req.body);
+      const { error } = userValidation.validate(req.body);
       if (error) {
         res.status(400).json({ message: error.message });
         return;
