@@ -2,6 +2,7 @@ const userModel = require("./user.model");
 const { userValidation } = require("./user.validation");
 const bcrypjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 class userController {
   constructor() {
@@ -106,19 +107,19 @@ class userController {
 
   async authorize(req, res, next) {
     try {
-      const authorizationHeader = req.get("Authorization");
+      const authorizationHeader = req.get("Authorization") || "";
       const token = authorizationHeader.replace("Bearer ", "");
 
       let userId;
       try {
         userId = await jwt.verify(token, process.env.JWT_SECRET).id;
       } catch (err) {
-        res.status(401).send("User not authorized");
+        res.status(401).send("Not authorized");
       }
 
       const user = await userModel.findById(userId);
       if (!user || user.token !== token) {
-        res.status(401).send("User not authorized");
+        res.status(401).send("Not authorized");
       }
 
       req.user = user;
