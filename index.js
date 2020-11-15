@@ -41,11 +41,12 @@ class Server {
     this.server.use(cors());
     this.server.use(express.json());
     this.server.use(morgan("dev"));
+    this.server.use("/images", express.static("./public/images"));
   }
 
   initRouters() {
     this.server.use("/api", contactRouter);
-    this.server.use("/auth",userAuthRooter );
+    this.server.use("/auth", userAuthRooter);
   }
 
   listen() {
