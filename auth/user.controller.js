@@ -3,6 +3,7 @@ const { userValidation } = require("./user.validation");
 const bcrypjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const { generateAvatar } = require("../auxiliaries/avatarGenerator");
 
 class userController {
   constructor() {
@@ -39,6 +40,7 @@ class userController {
         user: {
           email: user.email,
           subscription: user.subscription,
+          avatarURL: await generateAvatar(),
         },
       });
     } catch (err) {
