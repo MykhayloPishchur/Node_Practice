@@ -1,27 +1,59 @@
-const contactsActions = require("./contacts");
-const argv = require("yargs").argv;
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const contactRouter = require("./contacts/contacts.routes");
+const userAuthRooter = require("./auth/user.router");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
-function invokeAction({ action, id, name, email, phone }) {
-  switch (action) {
-    case "list":
-      contactsActions.listContacts();
-      break;
+dotenv.config();
 
-    case "get":
-      contactsActions.getContactById(id);
-      break;
+const PORT = process.env.PORT;
+const MONGO_DB_URL = `mongodb+srv://admin:${process.env.DB_PASSWORD}@cluster0.69hqj.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
-    case "add":
-      contactsActions.addContact(name, email, phone);
-      break;
+class Server {
+  constructor() {
+    this.server = null;
+  }
 
-    case "remove":
-      contactsActions.removeContact(id);
-      break;
+  start() {
+    this.connectDB();
+    this.initMiddleware();
+    this.initRouters();
+    this.listen();
+  }
 
-    default:
-      console.warn("\x1B[31m Unknown action type!");
+  async connectDB() {
+    try {
+      this.server = express();
+      await mongoose.connect(MONGO_DB_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      console.log("Database connection successful");
+    } catch (err) {
+      console.log(err.message);
+      process.exit(1);
+    }
+  }
+
+  initMiddleware() {
+    this.server.use(cors());
+    this.server.use(express.json());
+    this.server.use(morgan("dev"));
+  }
+
+  initRouters() {
+    this.server.use("/api", contactRouter);
+    this.server.use("/auth",userAuthRooter );
+  }
+
+  listen() {
+    this.server.listen(PORT, () => {
+      console.log("Server is listening on port", PORT);
+    });
   }
 }
 
-invokeAction(argv);
+const server = new Server();
+server.start();
