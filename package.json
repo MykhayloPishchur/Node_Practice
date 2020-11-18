@@ -22,6 +22,7 @@
     "nodemon": "^2.0.4"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.4.0",
     "avatar-generator": "^2.0.4",
     "bcrypt": "^5.0.0",
     "bcryptjs": "^2.4.3",
@@ -34,7 +35,10 @@
     "mongoose": "^5.10.10",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
+    "nodemailer": "^6.4.16",
+    "sendgrid": "^5.2.3",
     "shortid": "^2.2.15",
+    "uuid": "^8.3.1",
     "yargs": "^16.0.3"
   }
 }

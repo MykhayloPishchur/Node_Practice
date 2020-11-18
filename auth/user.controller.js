@@ -4,6 +4,11 @@ const bcrypjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { generateAvatar } = require("../auxiliaries/avatarGenerator");
+const uuid = require("uuid");
+const dotenv = require("dotenv");
+const { mailSender } = require("../auxiliaries/sendMail");
+
+dotenv.config();
 
 class userController {
   constructor() {
@@ -35,12 +40,17 @@ class userController {
         email,
         password: passwordHash,
         subscription,
+        avatarURL: await generateAvatar(),
+        verificationToken: uuid.v4(),
       });
+
+      await this.sendVerificationEmail(user);
+
       return res.status(201).json({
         user: {
           email: user.email,
           subscription: user.subscription,
-          avatarURL: await generateAvatar(),
+          avatarURL: user.avatarURL,
         },
       });
     } catch (err) {
@@ -131,6 +141,28 @@ class userController {
     } catch (err) {
       next(err);
     }
+  }
+
+  async sendVerificationEmail(user) {
+    const { email, verificationToken } = user;
+    const verificationLink = `http://localhost:${process.env.PORT}/auth/verify/${verificationToken}`;
+    await mailSender.sendVerificationEmail(email, verificationLink);
+  }
+
+  async verifyUser(req, res, next) {
+    const { verificationToken } = req.params;
+    const user = await userModel.findOneAndUpdate(
+      { verificationToken },
+      {
+        verificationToken: null,
+      }
+    );
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    return res.status(200).send();
   }
 }
 
