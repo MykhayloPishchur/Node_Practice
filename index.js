@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const contactRouter = require("./contacts/contacts.routes");
 const userAuthRooter = require("./auth/user.router");
+const usersRouter = require("./users/users.router");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
@@ -41,11 +41,12 @@ class Server {
     this.server.use(cors());
     this.server.use(express.json());
     this.server.use(morgan("dev"));
+    this.server.use("/images", express.static("./public/images"));
   }
 
   initRouters() {
-    this.server.use("/api", contactRouter);
-    this.server.use("/auth",userAuthRooter );
+    this.server.use("/auth", userAuthRooter);
+    this.server.use("/users", usersRouter);
   }
 
   listen() {
